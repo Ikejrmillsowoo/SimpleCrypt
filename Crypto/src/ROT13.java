@@ -1,10 +1,20 @@
-import java.util.Arrays;
+import java.io.*;
 
 import static java.lang.Character.isLowerCase;
 import static java.lang.Character.isUpperCase;
 import static java.lang.Character.toLowerCase;
 
 public class ROT13  {
+
+    public static void main(String[] args) throws IOException {
+
+        BufferedReader reader = new BufferedReader(new FileReader("sonnet18.txt"));
+
+        ROT13 rot13 = new ROT13();
+        rot13.readFileAndProcess(reader);
+        BufferedReader reader2 = new BufferedReader(new FileReader("sonnet18.enc"));
+        System.out.println(rot13.compareFiles(reader, reader2));
+    }
 
     ROT13(Character cs, Character cf) {
     }
@@ -16,17 +26,12 @@ public class ROT13  {
     public String crypt(String text) throws UnsupportedOperationException {
        char[] newArr = text.toLowerCase().toCharArray();
         for (int i = 0; i< text.length(); i++){
-            if (newArr[i] >122 || newArr[i] <97) {
-                newArr[i] = newArr[i];
-            }
-            else if ((newArr[i]-13)>=97){
-                newArr[i] = (char) (newArr[i] -13);
-            } else if ((newArr[i]-13)<97){
-                newArr[i] = (char) (123-(97-(newArr[i]-13)));
+            if (newArr[i] >='a' && newArr[i] <='z') {
+                newArr[i] = (char) ('a' + (newArr[i] - 'a' + 13) % 26);
             }
         }
-        String str = String.valueOf(newArr);
-        str = String.valueOf(str.charAt(0)).toUpperCase() +str.substring(1);
+        String str = new String(newArr);
+        str = str.substring(0, 1).toUpperCase() + str.substring(1);
 
         return str;
     }
@@ -36,6 +41,7 @@ public class ROT13  {
     }
 
     public String decrypt(String text) {
+        System.out.println(crypt(text));
         return crypt(text);
     }
 
@@ -46,8 +52,6 @@ public class ROT13  {
         for (int i = 0; i < arr.length; i++) {
             char ch = arr[i];
             if (ch >= 'A' && ch <= 'Z') {
-                //int base = 'A';
-                //int rotated = (ch - base + shift + 26) % 26 + base;
                 arr[i] = (char) ('A' + (ch - 'A' + shift) % arr.length);;
             }
         }
@@ -55,6 +59,33 @@ public class ROT13  {
         String result = new String(arr);
         System.out.println(result);
         return result;
+    }
+
+    public void readFileAndProcess(BufferedReader reader) throws IOException {
+//        BufferedReader reader = new BufferedReader(new FileReader("sonnet18.txt"));
+        try ( BufferedWriter writer = new BufferedWriter(new FileWriter("sonnet18.enc"))){
+            String line;
+            while ((line = reader.readLine()) != null){
+                String newLine = encrypt(line);
+                writer.write(newLine);
+                writer.newLine();
+                System.out.println(newLine);
+        }
+        }
+    }
+
+    public boolean compareFiles(BufferedReader reader, BufferedReader reader2){
+        try {
+            String line1, line2;
+            while ((line1 = reader.readLine()) != null & (line2 = reader2.readLine()) != null) {
+                if (!line1.equals(line2)) return false;
+            }
+            return reader.readLine() == null && reader2.readLine() == null;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+
     }
 
 }
