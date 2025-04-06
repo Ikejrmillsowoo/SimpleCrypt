@@ -40,25 +40,21 @@ public class ROT13  {
     }
 
     public static String rotate(String s, Character c) {
-//        String newStr = s.toLowerCase();
-        int numToRotateBy = c - s.charAt(0);
+        int shift = c - s.charAt(0); // this can be negative or positive
         char[] arr = s.toCharArray();
 
-        for (int i = 0; i< arr.length; i++){
-            if (arr[i] >'Z' || arr[i] <'A') {
-                arr[i] = arr[i];
-            }
-            else if ((arr[i]+numToRotateBy)>='A'){
-                arr[i] = (char) (arr[i] +numToRotateBy);
-            } else if ((arr[i]+numToRotateBy)<'Z'){
-                arr[i] = (char) ('Z'-('A'-(arr[i]+numToRotateBy)));
+        for (int i = 0; i < arr.length; i++) {
+            char ch = arr[i];
+            if (ch >= 'A' && ch <= 'Z') {
+                //int base = 'A';
+                //int rotated = (ch - base + shift + 26) % 26 + base;
+                arr[i] = (char) ('A' + (ch - 'A' + shift) % arr.length);;
             }
         }
 
-        String str = String.valueOf(arr);
-       // str = String.valueOf(str.charAt(0)).toUpperCase() +str.substring(1);
-        System.out.println(str);
-        return str;
+        String result = new String(arr);
+        System.out.println(result);
+        return result;
     }
 
 }
