@@ -76,9 +76,9 @@ public class ROT13  {
 
     public boolean compareFiles(BufferedReader reader, BufferedReader reader2){
         try {
-            String line1, line2;
-            while ((line1 = reader.readLine()) != null & (line2 = reader2.readLine()) != null) {
-                if (!line1.equals(line2)) return false;
+            String originalFile, alteredFile;
+            while ((originalFile = reader.readLine()) != null & (alteredFile = reader2.readLine()) != null) {
+                if (!originalFile.equals(alteredFile)) return false;
             }
             return reader.readLine() == null && reader2.readLine() == null;
         } catch (IOException e) {
